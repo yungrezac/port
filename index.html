@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dev Portfolio | TT Style</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&amp;family=Outfit:wght@400;700;900&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            overscroll-behavior-y: none;
+        }
+
+        .feed-container {
+            height: 100vh;
+            height: 100dvh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .feed-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .video-container {
+            height: 100vh;
+            height: 100dvh;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            background-color: #111;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- Animations --- */
+        @keyframes spinRecord { 100% { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spinRecord 4s linear infinite; }
+
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .animate-marquee { display: inline-block; white-space: nowrap; animation: marquee 5s linear infinite; }
+
+        @keyframes floatHeart {
+            0% { transform: scale(0) rotate(-15deg); opacity: 0; }
+            20% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+            80% { transform: scale(1) rotate(0deg) translateY(-50px); opacity: 1; }
+            100% { transform: scale(1) rotate(15deg) translateY(-100px); opacity: 0; }
+        }
+        .floating-heart {
+            position: absolute;
+            color: #ef4444;
+            font-size: 80px;
+            pointer-events: none;
+            animation: floatHeart 1s ease-out forwards;
+            z-index: 50;
+            filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.5));
+        }
+
+        @keyframes popIcon {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        .icon-pop { animation: popIcon 0.3s ease-in-out; }
+
+        /* Specific Backgrounds */
+        .bg-timer-roll { background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%); }
+        .bg-shoko { background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.2), transparent 40%), radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.2), transparent 40%), #020617; }
+        .bg-kirieshka { background: radial-gradient(circle at 50% 30%, rgba(254, 9, 121, 0.15), transparent 50%), #050508; }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            opacity: 0.5;
+            z-index: 1;
+            border-radius: 50%;
+            animation: pulseBlob 8s infinite alternate;
+        }
+        @keyframes pulseBlob {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.2) translate(20px, -20px); }
+        }
+
+        .top-nav { background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, transparent 100%); }
+        
+        .font-display { font-family: 'Outfit', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+        /* Custom Project Animations */
+        
+        /* 1. Timer Roulette */
+        .roulette-track {
+            display: flex;
+            transition: transform 3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .roulette-item {
+            min-width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        /* 2. Shoko Panel */
+        .gift-popup {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        .gift-popup.active {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .rcon-line {
+            animation: typeIn 0.3s ease-out forwards;
+        }
+        @keyframes typeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* 3. Kirieshka TTS */
+        .chat-msg {
+            animation: slideUp 0.3s ease-out forwards;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .audio-bar {
+            width: 8px;
+            background: linear-gradient(to top, #06b6d4, #fe0979);
+            border-radius: 9999px;
+            height: 20%;
+            transition: height 0.2s ease;
+        }
+        .vis-active .audio-bar { animation: bounceBar infinite ease-in-out alternate; }
+        .vis-active .audio-bar:nth-child(1) { animation-duration: 0.6s; }
+        .vis-active .audio-bar:nth-child(2) { animation-duration: 0.8s; animation-delay: 0.2s; }
+        .vis-active .audio-bar:nth-child(3) { animation-duration: 0.5s; animation-delay: 0.4s; }
+        .vis-active .audio-bar:nth-child(4) { animation-duration: 0.7s; animation-delay: 0.1s; }
+        .vis-active .audio-bar:nth-child(5) { animation-duration: 0.9s; animation-delay: 0.3s; }
+        
+        @keyframes bounceBar {
+            0% { height: 20%; }
+            100% { height: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <div class="fixed top-0 left-0 w-full z-40 top-nav pt-12 pb-6 px-4 flex justify-between items-start pointer-events-none">
+        <div class="pointer-events-auto">
+            <h1 class="text-2xl font-black font-display tracking-tight drop-shadow-md">Portfolio.</h1>
+        </div>
+        <div class="pointer-events-auto flex gap-4 text-xl drop-shadow-md">
+            <button class="hover:text-gray-300 transition"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <button class="hover:text-gray-300 transition"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Feed Container -->
+    <div class="feed-container relative" id="feed">
+        
+        <!-- ========================================== -->
+        <!-- PROJECT 1: TIMER-ROLL -->
+        <!-- ========================================== -->
+        <div class="video-container bg-timer-roll relative" data-id="timer-roll">
+            <!-- Background Visuals -->
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+                <div class="blob w-96 h-96 bg-indigo-600 top-20 -left-20"></div>
+                <div class="blob w-80 h-80 bg-purple-600 bottom-20 -right-20" style="animation-delay: -4s"></div>
+                
+                <!-- Main App UI Overlay -->
+                <div class="flex flex-col items-center justify-center z-10 w-full max-w-sm gap-8 transform -translate-y-10">
+                    
+                    <!-- Timer Display -->
+                    <div class="flex flex-col items-center">
+                        <div id="timer-status" class="text-sm font-bold text-indigo-300 mb-2 h-5 tracking-widest uppercase transition-opacity duration-300"></div>
+                        <div class="glass-panel px-8 py-4 rounded-3xl border-indigo-500/30 shadow-[0_0_40px_rgba(79,70,229,0.3)]">
+                            <div id="timer-val" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-200 font-display tabular-nums">00:00:00</div>
+                        </div>
+                        <div id="timer-added" class="text-emerald-400 font-bold text-lg mt-2 opacity-0 transform translate-y-2 transition-all duration-300">+00:00</div>
+                    </div>
+
+                    <!-- Roulette Container (Hidden initially) -->
+                    <div id="roulette-box" class="w-full h-20 glass-panel rounded-xl overflow-hidden relative opacity-0 scale-95 transition-all duration-500">
+                        <!-- Center Indicator -->
+                        <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-red-500 z-20 transform -translate-x-1/2 shadow-[0_0_10px_red]"></div>
+                        <!-- Gradient overlays for edges -->
+                        <div class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#17153b] to-transparent z-10"></div>
+                        <div class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#17153b] to-transparent z-10"></div>
+                        
+                        <!-- Track -->
+                        <div id="roulette-track" class="roulette-track h-full items-center">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Double Tap Area -->
+            <div class="absolute inset-0 z-10 interact-area"></div>
+
+            <!-- Right Sidebar Actions -->
+            <div class="absolute right-4 bottom-28 z-30 flex flex-col items-center gap-6">
+                <!-- Avatar -->
+                <div class="relative group cursor-pointer">
+                    <div class="w-12 h-12 rounded-full bg-slate-800 p-0.5 border-2 border-white">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop" class="w-full h-full rounded-full object-cover" alt="Author">
+                    </div>
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-indigo-500 rounded-full flex items-center justify-center border border-white text-xs">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                </div>
+
+                <!-- Like -->
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-heart text-3xl text-white drop-shadow-md transition-colors like-icon"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md like-count">12.4K</span>
+                </button>
+
+                <!-- Code/Comments -->
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-code text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Source</span>
+                </button>
+
+                <!-- Share -->
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-share text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Share</span>
+                </button>
+            </div>
+
+            <!-- Bottom Left Info -->
+            <div class="absolute left-4 bottom-6 right-20 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-xl font-bold mb-1 flex items-center gap-2">
+                    @nneensi0 <i class="fa-solid fa-circle-check text-indigo-400 text-sm"></i>
+                </h2>
+                <h3 class="text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-2">TIMER-ROLL</h3>
+                <p class="text-sm font-medium mb-3 text-gray-200 line-clamp-2">
+                    Интерактивный оверлей для стримов. Таймер с баффами, дебаффами и рулетка на React + Electron. 🎲⚡
+                </p>
+                <div class="flex gap-2 mb-4 flex-wrap">
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-indigo-300 border-indigo-500/30">#React</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-purple-300 border-purple-500/30">#Tailwind</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-blue-300 border-blue-500/30">#Supabase</span>
+                </div>
+
+                <!-- Music / Audio Track -->
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-music text-sm animate-pulse"></i>
+                    <div class="w-48 overflow-hidden relative">
+                        <span class="text-sm font-medium animate-marquee">Оригинальный звук - timer_roll_synthwave</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Spinning Record -->
+            <div class="absolute right-4 bottom-6 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <div class="w-12 h-12 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                    <div class="w-6 h-6 rounded-full bg-indigo-500">
+                        <img src="https://placehold.co/50x50/312e81/ffffff?text=TR" class="w-full h-full rounded-full object-cover opacity-80" alt="record">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PROJECT 2: SHOKO -->
+        <!-- ========================================== -->
+        <div class="video-container bg-shoko relative" data-id="shoko">
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+                <div class="blob w-[500px] h-[500px] bg-emerald-600/20 top-0 right-0"></div>
+                <div class="blob w-[400px] h-[400px] bg-pink-600/20 bottom-0 left-0" style="animation-delay: -2s"></div>
+                
+                <!-- Shoko App Visual -->
+                <div class="w-full max-w-sm flex flex-col gap-6 z-10 transform -translate-y-12">
+                    
+                    <!-- Gift Notification (TikTok Style) -->
+                    <div id="shoko-gift-alert" class="gift-popup mx-auto glass-panel bg-black/60 rounded-full px-4 py-2 flex items-center gap-3 border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                        <div class="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 p-[1px]">
+                            <img id="shoko-user-avatar" src="https://placehold.co/100/333/fff?text=U" class="w-full h-full rounded-full object-cover">
+                        </div>
+                        <div class="text-sm">
+                            <span id="shoko-username" class="font-bold text-pink-300">user</span>
+                            <span class="text-gray-300">отправил(а)</span>
+                            <span class="font-bold text-white flex items-center gap-1 inline-flex">🌹 Розу</span>
+                        </div>
+                    </div>
+
+                    <!-- Terminal / RCON View -->
+                    <div class="glass-panel w-full h-64 rounded-xl border-white/10 shadow-2xl flex flex-col overflow-hidden bg-[#0a0a0a]/80 backdrop-blur-xl">
+                        <!-- Mac-style header -->
+                        <div class="h-8 bg-white/5 border-b border-white/10 flex items-center px-4 gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                            <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+                            <span class="ml-2 text-xs font-mono text-gray-400">RCON Console</span>
+                        </div>
+                        <!-- Terminal Body -->
+                        <div id="rcon-console" class="p-4 font-mono text-[11px] md:text-xs text-gray-300 flex-1 overflow-hidden flex flex-col justify-end gap-1">
+                            <div class="text-emerald-400">Server connected on 127.0.0.1:25575</div>
+                            <div class="text-gray-500">Listening for TikTok Live events...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute inset-0 z-10 interact-area"></div>
+
+            <div class="absolute right-4 bottom-28 z-30 flex flex-col items-center gap-6">
+                <div class="relative group cursor-pointer">
+                    <div class="w-12 h-12 rounded-full bg-slate-800 p-0.5 border-2 border-white">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop" class="w-full h-full rounded-full object-cover" alt="Author">
+                    </div>
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center border border-white text-xs">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                </div>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-heart text-3xl text-white drop-shadow-md transition-colors like-icon"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md like-count">8.1K</span>
+                </button>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-code text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Source</span>
+                </button>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-share text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Share</span>
+                </button>
+            </div>
+
+            <div class="absolute left-4 bottom-6 right-20 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-xl font-bold mb-1 flex items-center gap-2">
+                    @nneensi0 <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                </h2>
+                <h3 class="text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-2">SHOKO PANEL</h3>
+                <p class="text-sm font-medium mb-3 text-gray-200 line-clamp-2">
+                    Мощная панель управления для спавна мобов в Minecraft через подарки TikTok. Интеграция RCON & Socket.io ⚔️
+                </p>
+                <div class="flex gap-2 mb-4 flex-wrap">
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-violet-300 border-violet-500/30">#SocketIO</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-emerald-300 border-emerald-500/30">#MinecraftAPI</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-pink-300 border-pink-500/30">#TikTokLive</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-music text-sm animate-pulse"></i>
+                    <div class="w-48 overflow-hidden relative">
+                        <span class="text-sm font-medium animate-marquee">Оригинальный звук - shoko_minecraft_ost</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute right-4 bottom-6 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <div class="w-12 h-12 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                    <div class="w-6 h-6 rounded-full bg-emerald-500">
+                        <img src="https://placehold.co/50x50/064e3b/ffffff?text=SH" class="w-full h-full rounded-full object-cover opacity-80" alt="record">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- PROJECT 3: KIRIESHKA TTS -->
+        <!-- ========================================== -->
+        <div class="video-container bg-kirieshka relative" data-id="kirieshka">
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
+                <div class="blob w-[600px] h-[600px] bg-[#fe0979]/20 top-0 rounded-full mix-blend-screen"></div>
+                <div class="blob w-[500px] h-[500px] bg-cyan-600/20 bottom-10 rounded-full mix-blend-screen" style="animation-delay: -3s;"></div>
+                
+                <!-- Kirieshka App UI -->
+                <div class="w-full max-w-sm flex flex-col items-center gap-6 z-10 transform -translate-y-16 px-4">
+                    
+                    <!-- Chat window -->
+                    <div class="w-full h-48 flex flex-col justify-end gap-2 overflow-hidden mb-4 relative mask-image-bottom" style="-webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);">
+                        <div id="tts-chat-container" class="flex flex-col gap-3 w-full">
+                            <!-- JS will inject comments here -->
+                        </div>
+                    </div>
+
+                    <!-- TTS Visualizer and Status -->
+                    <div class="glass-panel w-full rounded-3xl p-6 border-white/10 shadow-2xl flex flex-col items-center gap-4 bg-black/40">
+                        <div class="flex items-center justify-between w-full">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#fe0979] to-purple-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-robot text-white"></i>
+                                </div>
+                                <div>
+                                    <div class="font-bold text-sm">Silero TTS Model</div>
+                                    <div id="tts-status-text" class="text-xs text-gray-400">Ожидание...</div>
+                                </div>
+                            </div>
+                            <div id="tts-status-badge" class="px-3 py-1 rounded-full text-[10px] font-bold bg-gray-500/20 text-gray-300 transition-colors duration-300">
+                                STANDBY
+                            </div>
+                        </div>
+
+                        <!-- Abstract Audio Visualizer -->
+                        <div id="tts-visualizer" class="flex items-end justify-center gap-2 h-16 w-full bg-black/30 rounded-xl p-2 mt-2">
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                            <div class="audio-bar"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute inset-0 z-10 interact-area"></div>
+
+            <div class="absolute right-4 bottom-28 z-30 flex flex-col items-center gap-6">
+                <div class="relative group cursor-pointer">
+                    <div class="w-12 h-12 rounded-full bg-slate-800 p-0.5 border-2 border-white">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop" class="w-full h-full rounded-full object-cover" alt="Author">
+                    </div>
+                    <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-5 h-5 bg-[#fe0979] rounded-full flex items-center justify-center border border-white text-xs">
+                        <i class="fa-solid fa-plus"></i>
+                    </div>
+                </div>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-heart text-3xl text-white drop-shadow-md transition-colors like-icon"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md like-count">24.5K</span>
+                </button>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-code text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Source</span>
+                </button>
+                <button class="action-btn flex flex-col items-center gap-1 group">
+                    <div class="w-10 h-10 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                        <i class="fa-solid fa-share text-3xl text-white drop-shadow-md"></i>
+                    </div>
+                    <span class="text-xs font-semibold drop-shadow-md">Share</span>
+                </button>
+            </div>
+
+            <div class="absolute left-4 bottom-6 right-20 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-xl font-bold mb-1 flex items-center gap-2">
+                    @nneensi0 <i class="fa-solid fa-paw text-[#fe0979] text-sm"></i>
+                </h2>
+                <h3 class="text-2xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-[#fe0979] to-cyan-400 mb-2">kirieshka tts</h3>
+                <p class="text-sm font-medium mb-3 text-gray-200 line-clamp-2">
+                    Локальная нейросеть (Silero TTS) для озвучки чата трансляций. Сделано с любовью ❤️🐾
+                </p>
+                <div class="flex gap-2 mb-4 flex-wrap">
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-[#fe0979] border-[#fe0979]/30">#TTS</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-cyan-300 border-cyan-500/30">#Silero</span>
+                    <span class="glass-panel px-3 py-1 rounded-full text-xs font-bold text-white border-white/30">#Electron</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-music text-sm animate-pulse"></i>
+                    <div class="w-48 overflow-hidden relative">
+                        <span class="text-sm font-medium animate-marquee">Оригинальный звук - voice_ai_magic</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="absolute right-4 bottom-6 z-30 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <div class="w-12 h-12 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                    <div class="w-6 h-6 rounded-full bg-[#fe0979]">
+                        <img src="https://placehold.co/50x50/831843/ffffff?text=TTS" class="w-full h-full rounded-full object-cover opacity-80" alt="record">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- End Feed -->
+
+    <!-- Discover Modal (Hidden by default) -->
+    <div id="discover-modal" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl hidden flex-col overflow-y-auto pb-24 transition-opacity duration-300 opacity-0 pointer-events-none">
+        <div class="pt-16 px-6 max-w-md mx-auto w-full">
+            <h2 class="text-4xl font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 mb-2">devtiktik.tech</h2>
+            <p class="text-gray-300 font-medium mb-8">Инновационные решения для TikTok Live Studio</p>
+
+            <div class="space-y-4">
+                <div class="glass-panel p-5 rounded-2xl border-white/10 relative overflow-hidden">
+                    <div class="absolute -right-4 -bottom-4 text-6xl opacity-10">🚀</div>
+                    <h3 class="text-xl font-bold mb-2 text-white">Разработка любой сложности</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Мы создаем виджеты, оверлеи и полноценные десктопные программы для стримов в TikTok абсолютно любой сложности. От простых счетчиков до сложных интерактивных систем для вашего эфира.</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border-white/10">
+                    <h3 class="text-lg font-bold mb-2 text-pink-400 flex items-center gap-2"><i class="fa-solid fa-gamepad"></i> Игровые интеграции</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Связываем ваш стрим с играми в реальном времени. Зрители кидают подарки — в Minecraft спавнятся мобы (интеграция RCON), в GTA V происходят события. Полный интерактив и контроль!</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border-white/10">
+                    <h3 class="text-lg font-bold mb-2 text-cyan-400 flex items-center gap-2"><i class="fa-solid fa-robot"></i> Нейросети и TTS</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Подключение локальных нейросетей (таких как Silero) и облачных решений для умной озвучки чата. Генерация ответов, кастомные голоса и создание виртуальных стримеров (V-Tubers).</p>
+                </div>
+
+                <div class="glass-panel p-5 rounded-2xl border-white/10">
+                    <h3 class="text-lg font-bold mb-2 text-purple-400 flex items-center gap-2"><i class="fa-solid fa-desktop"></i> Автономные программы</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">Мы не ограничиваемся веб-виджетами. Мы создаем полноценные Standalone приложения (Electron.js, Python) для безопасного и удобного управления вашим стримом прямо с ПК.</p>
+                </div>
+            </div>
+            
+            <div class="mt-8 mb-4">
+                <a href="https://t.me/jacobdeads" target="_blank" class="w-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-xl py-4 flex items-center justify-center gap-2 font-bold text-white shadow-lg shadow-cyan-500/20 active:scale-95 transition-transform">
+                    <i class="fa-brands fa-telegram text-2xl"></i> Заказать разработку
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="fixed bottom-0 left-0 w-full z-[60] bg-black/80 backdrop-blur-md border-t border-white/10 pb-[var(--safe-area-bottom)]">
+        <div class="flex justify-around items-center h-14 px-2">
+            <button id="nav-home" class="flex flex-col items-center justify-center w-12 text-white transition hover:text-gray-300">
+                <i class="fa-solid fa-house text-xl mb-1"></i>
+                <span class="text-[9px] font-bold">Home</span>
+            </button>
+            <button id="nav-discover" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white">
+                <i class="fa-solid fa-compass text-xl mb-1"></i>
+                <span class="text-[9px] font-bold">Discover</span>
+            </button>
+            <button class="flex items-center justify-center w-14 transition hover:scale-105">
+                <div class="relative w-11 h-7 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+                    <div class="absolute left-0 w-1 h-full bg-cyan-400"></div>
+                    <div class="absolute right-0 w-1 h-full bg-pink-500"></div>
+                    <i class="fa-solid fa-plus text-black font-black"></i>
+                </div>
+            </button>
+            <button id="nav-inbox" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white">
+                <i class="fa-solid fa-message text-xl mb-1"></i>
+                <span class="text-[9px] font-bold">Inbox</span>
+            </button>
+            <button id="nav-profile" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white">
+                <i class="fa-regular fa-user text-xl mb-1"></i>
+                <span class="text-[9px] font-bold">Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // ==========================================
+            // NAVIGATION LOGIC
+            // ==========================================
+            const btnHome = document.getElementById('nav-home');
+            const btnDiscover = document.getElementById('nav-discover');
+            const btnInbox = document.getElementById('nav-inbox');
+            const btnProfile = document.getElementById('nav-profile');
+            const discoverModal = document.getElementById('discover-modal');
+            const feedContainer = document.getElementById('feed');
+
+            // Set inactive state for all nav buttons
+            const resetNav = () => {
+                [btnHome, btnDiscover, btnInbox, btnProfile].forEach(btn => {
+                    btn.classList.remove('text-white');
+                    btn.classList.add('text-gray-500');
+                });
+            };
+
+            btnHome.addEventListener('click', () => {
+                resetNav();
+                btnHome.classList.remove('text-gray-500');
+                btnHome.classList.add('text-white');
+                
+                // Hide Discover Modal
+                discoverModal.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => {
+                    discoverModal.classList.add('hidden');
+                    discoverModal.classList.remove('flex');
+                }, 300);
+                
+                // Scroll to top of feed
+                feedContainer.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            btnDiscover.addEventListener('click', () => {
+                resetNav();
+                btnDiscover.classList.remove('text-gray-500');
+                btnDiscover.classList.add('text-white');
+                
+                // Show Discover Modal
+                discoverModal.classList.remove('hidden');
+                discoverModal.classList.add('flex');
+                // Small delay to allow display:flex to apply before animating opacity
+                setTimeout(() => {
+                    discoverModal.classList.remove('opacity-0', 'pointer-events-none');
+                }, 10);
+            });
+
+            btnInbox.addEventListener('click', () => {
+                window.open('https://t.me/jacobdeads', '_blank');
+            });
+
+            btnProfile.addEventListener('click', () => {
+                window.open('https://www.tiktok.com/@nneensi0', '_blank');
+            });
+
+            // ==========================================
+            // GLOBAL: UI Interactions (Likes, Double tap)
+            // ==========================================
+            const videos = document.querySelectorAll('.video-container');
+            
+            videos.forEach(video => {
+                const interactArea = video.querySelector('.interact-area');
+                const likeBtn = video.querySelector('.action-btn:nth-child(2)');
+                const likeIcon = likeBtn.querySelector('.like-icon');
+                const likeCountEl = likeBtn.querySelector('.like-count');
+                
+                let isLiked = false;
+                let baseLikes = parseFloat(likeCountEl.innerText);
+                let clickTimer = null;
+
+                const toggleLike = () => {
+                    isLiked = !isLiked;
+                    if (isLiked) {
+                        likeIcon.classList.remove('text-white');
+                        likeIcon.classList.add('text-red-500');
+                        likeIcon.parentElement.classList.add('icon-pop');
+                        likeCountEl.innerText = (baseLikes + 0.1).toFixed(1) + 'K';
+                    } else {
+                        likeIcon.classList.add('text-white');
+                        likeIcon.classList.remove('text-red-500');
+                        likeCountEl.innerText = baseLikes + 'K';
+                    }
+                    setTimeout(() => likeIcon.parentElement.classList.remove('icon-pop'), 300);
+                };
+
+                likeBtn.addEventListener('click', toggleLike);
+
+                interactArea.addEventListener('click', (e) => {
+                    if (clickTimer === null) {
+                        clickTimer = setTimeout(() => { clickTimer = null; }, 300);
+                    } else {
+                        clearTimeout(clickTimer);
+                        clickTimer = null;
+                        if (!isLiked) toggleLike();
+                        createFloatingHeart(e.clientX, e.clientY, video);
+                    }
+                });
+            });
+
+            function createFloatingHeart(x, y, container) {
+                const heart = document.createElement('i');
+                heart.className = 'fa-solid fa-heart floating-heart';
+                const rect = container.getBoundingClientRect();
+                heart.style.left = `${(x - rect.left) - 40}px`;
+                heart.style.top = `${(y - rect.top) - 40}px`;
+                const rot = Math.random() * 30 - 15;
+                heart.style.setProperty('--rot', `${rot}deg`);
+                container.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            }
+
+
+            // ==========================================
+            // PROJECT 1: TIMER-ROLL LOGIC
+            // ==========================================
+            const timerValEl = document.getElementById('timer-val');
+            const timerStatusEl = document.getElementById('timer-status');
+            const timerAddedEl = document.getElementById('timer-added');
+            const rouletteBox = document.getElementById('roulette-box');
+            const rouletteTrack = document.getElementById('roulette-track');
+            
+            let totalSeconds = 3600; // Start at 01:00:00
+            let timerInterval;
+            
+            function formatTime(secs) {
+                const h = Math.floor(secs / 3600).toString().padStart(2, '0');
+                const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+                const s = (secs % 60).toString().padStart(2, '0');
+                return `${h}:${m}:${s}`;
+            }
+
+            function startMainTimer() {
+                clearInterval(timerInterval);
+                timerStatusEl.innerText = 'Осталось времени';
+                timerStatusEl.classList.remove('text-pink-400');
+                timerStatusEl.classList.add('text-indigo-300');
+                
+                timerInterval = setInterval(() => {
+                    if(totalSeconds > 0) {
+                        totalSeconds--;
+                        timerValEl.innerText = formatTime(totalSeconds);
+                    }
+                }, 1000);
+            }
+
+            // Create roulette items
+            const rouletteOptions = ['+1 мин', '-2 мин', '+5 мин', '-1 мин', '+10 мин', 'JACKPOT', '-5 мин', '+2 мин'];
+            // Duplicate array to make track long enough
+            const fullOptions = Array(10).fill(rouletteOptions).flat();
+            
+            fullOptions.forEach(opt => {
+                const el = document.createElement('div');
+                el.className = `roulette-item ${opt.startsWith('+') || opt==='JACKPOT' ? 'text-emerald-400' : 'text-red-400'}`;
+                el.innerText = opt;
+                rouletteTrack.appendChild(el);
+            });
+
+            async function triggerRouletteEvent() {
+                clearInterval(timerInterval); // Pause timer
+                
+                // 1. Initial Donat event
+                const addedSeconds = Math.floor(Math.random() * 10) * 60; // Random minutes
+                totalSeconds += addedSeconds;
+                
+                timerStatusEl.innerText = 'Событие!';
+                timerStatusEl.classList.add('text-pink-400');
+                timerAddedEl.innerText = `+${formatTime(addedSeconds)}`;
+                timerAddedEl.style.opacity = '1';
+                timerAddedEl.style.transform = 'translateY(0)';
+                timerValEl.innerText = formatTime(totalSeconds);
+                
+                await new Promise(r => setTimeout(r, 2000));
+                
+                // 2. Start Roulette
+                timerAddedEl.style.opacity = '0';
+                timerAddedEl.style.transform = 'translateY(10px)';
+                timerStatusEl.innerText = 'Запуск рулетки...';
+                
+                rouletteBox.style.opacity = '1';
+                rouletteBox.style.transform = 'scale(1)';
+                
+                await new Promise(r => setTimeout(r, 500));
+                
+                // 3. Spin!
+                // Reset track without animation
+                rouletteTrack.style.transition = 'none';
+                rouletteTrack.style.transform = 'translateX(0px)';
+                
+                // Force reflow
+                void rouletteTrack.offsetWidth;
+                
+                // Spin animation
+                const itemWidth = 80;
+                const itemsToSpin = 30 + Math.floor(Math.random() * 15); // Spin ~30-45 items deep
+                const finalPos = -(itemsToSpin * itemWidth);
+                
+                rouletteTrack.style.transition = 'transform 3.5s cubic-bezier(0.1, 0.7, 0.1, 1)';
+                rouletteTrack.style.transform = `translateX(${finalPos}px)`;
+                
+                await new Promise(r => setTimeout(r, 4000));
+                
+                // 4. Apply result
+                const resultText = fullOptions[itemsToSpin + 2]; // roughly center item
+                let timeMod = 0;
+                if(resultText.includes('+1')) timeMod = 60;
+                if(resultText.includes('-1')) timeMod = -60;
+                if(resultText.includes('+2')) timeMod = 120;
+                if(resultText.includes('-2')) timeMod = -120;
+                if(resultText.includes('+5')) timeMod = 300;
+                if(resultText.includes('-5')) timeMod = -300;
+                if(resultText.includes('+10')) timeMod = 600;
+                if(resultText === 'JACKPOT') timeMod = 3600;
+                
+                totalSeconds += timeMod;
+                if(totalSeconds < 0) totalSeconds = 0;
+                
+                timerStatusEl.innerText = `Выпало: ${resultText}`;
+                timerValEl.innerText = formatTime(totalSeconds);
+                timerValEl.classList.add('scale-110', 'text-white');
+                
+                await new Promise(r => setTimeout(r, 2500));
+                
+                // 5. Cleanup
+                timerValEl.classList.remove('scale-110', 'text-white');
+                rouletteBox.style.opacity = '0';
+                rouletteBox.style.transform = 'scale(0.95)';
+                
+                startMainTimer();
+            }
+
+            // Start timer logic
+            startMainTimer();
+            // Trigger roulette event every 12 seconds
+            setInterval(triggerRouletteEvent, 12000);
+
+
+
+            // ==========================================
+            // PROJECT 2: SHOKO PANEL LOGIC
+            // ==========================================
+            const shokoGiftAlert = document.getElementById('shoko-gift-alert');
+            const shokoUsername = document.getElementById('shoko-username');
+            const shokoAvatar = document.getElementById('shoko-user-avatar');
+            const rconConsole = document.getElementById('rcon-console');
+            
+            const minecraftUsers = ['Steve99', 'AlexPro', 'CreeperSlayer', 'DiamondMiner_007', 'DarkKnight'];
+            const minecraftMobs = [
+                { name: 'Крипер', id: 'minecraft:creeper', color: 'text-emerald-400' },
+                { name: 'Зомби', id: 'minecraft:zombie', color: 'text-green-500' },
+                { name: 'Скелет', id: 'minecraft:skeleton', color: 'text-gray-300' },
+                { name: 'ТНТ', id: 'minecraft:tnt', color: 'text-red-500' }
+            ];
+
+            function addRconLine(text, styleClass = 'text-gray-300') {
+                const line = document.createElement('div');
+                line.className = `rcon-line ${styleClass}`;
+                const time = new Date().toLocaleTimeString('en-US', { hour12: false });
+                line.innerHTML = `<span class="text-gray-600">[${time}]</span> ${text}`;
+                rconConsole.appendChild(line);
+                
+                // Keep only last 6 lines
+                if (rconConsole.children.length > 7) {
+                    rconConsole.removeChild(rconConsole.children[1]);
+                }
+            }
+
+            async function triggerShokoEvent() {
+                const user = minecraftUsers[Math.floor(Math.random() * minecraftUsers.length)];
+                const mob = minecraftMobs[Math.floor(Math.random() * minecraftMobs.length)];
+                
+                // 1. Show Gift
+                shokoUsername.innerText = user;
+                shokoAvatar.src = `https://placehold.co/100/ec4899/fff?text=${user[0]}`;
+                shokoGiftAlert.classList.add('active');
+                
+                addRconLine(`Event received: GIFT "Rose" from @${user}`, 'text-pink-400');
+                
+                await new Promise(r => setTimeout(r, 1000));
+                
+                // 2. Execute RCON
+                addRconLine(`Executing command: /summon ${mob.id} ~ ~ ~`, 'text-yellow-400');
+                
+                await new Promise(r => setTimeout(r, 800));
+                
+                // 3. RCON Response
+                addRconLine(`Response: Object successfully summoned.`, mob.color);
+                
+                await new Promise(r => setTimeout(r, 2000));
+                
+                // 4. Hide Gift
+                shokoGiftAlert.classList.remove('active');
+            }
+
+            // Start Shoko loop
+            setTimeout(() => {
+                triggerShokoEvent();
+                setInterval(triggerShokoEvent, 6000);
+            }, 1000);
+
+
+            // ==========================================
+            // PROJECT 3: KIRIESHKA TTS LOGIC
+            // ==========================================
+            const ttsChatContainer = document.getElementById('tts-chat-container');
+            const ttsStatusText = document.getElementById('tts-status-text');
+            const ttsStatusBadge = document.getElementById('tts-status-badge');
+            const ttsVisualizer = document.getElementById('tts-visualizer');
+            
+            const comments = [
+                { user: 'chat_user1', text: 'Привет! Как дела на стриме?' },
+                { user: 'gamer_boy', text: 'Озвучь меня, нейросеть!' },
+                { user: 'kiska2000', text: 'А что за игра сегодня?' },
+                { user: 'pro_player', text: 'Крутая программа, где скачать?' },
+                { user: 'anon', text: '1 2 3 проверка связи' }
+            ];
+
+            function createChatMessage(user, text) {
+                const el = document.createElement('div');
+                el.className = 'chat-msg glass-panel p-3 rounded-2xl bg-white/5 border-white/10 self-start max-w-[85%]';
+                el.innerHTML = `
+                    <div class="text-[10px] font-bold text-cyan-400 mb-1">@${user}</div>
+                    <div class="text-sm text-gray-100">${text}</div>
+                `;
+                return el;
+            }
+
+            async function triggerTTSEvent() {
+                const msg = comments[Math.floor(Math.random() * comments.length)];
+                
+                // 1. Add Chat Message
+                const msgEl = createChatMessage(msg.user, msg.text);
+                ttsChatContainer.appendChild(msgEl);
+                if (ttsChatContainer.children.length > 3) {
+                    ttsChatContainer.removeChild(ttsChatContainer.firstChild);
+                }
+
+                // 2. State: Processing
+                ttsStatusText.innerText = 'Генерация аудио...';
+                ttsStatusBadge.innerText = 'PROCESSING';
+                ttsStatusBadge.className = 'px-3 py-1 rounded-full text-[10px] font-bold bg-yellow-500/20 text-yellow-300 transition-colors duration-300';
+                
+                await new Promise(r => setTimeout(r, 1500));
+                
+                // 3. State: Playing (Озвучено)
+                ttsStatusText.innerText = `Воспроизведение: @${msg.user}`;
+                ttsStatusBadge.innerText = 'ОЗВУЧЕНО';
+                ttsStatusBadge.className = 'px-3 py-1 rounded-full text-[10px] font-bold bg-[#fe0979]/20 text-[#fe0979] transition-colors duration-300';
+                ttsVisualizer.classList.add('vis-active');
+                
+                // Simulate audio length based on text length
+                const audioDuration = Math.max(2000, msg.text.length * 100);
+                await new Promise(r => setTimeout(r, audioDuration));
+                
+                // 4. State: Standby
+                ttsStatusText.innerText = 'Ожидание...';
+                ttsStatusBadge.innerText = 'STANDBY';
+                ttsStatusBadge.className = 'px-3 py-1 rounded-full text-[10px] font-bold bg-gray-500/20 text-gray-300 transition-colors duration-300';
+                ttsVisualizer.classList.remove('vis-active');
+            }
+
+            // Start TTS loop
+            setTimeout(() => {
+                triggerTTSEvent();
+                setInterval(triggerTTSEvent, 8000);
+            }, 2000);
+
+        });
+    </script>
+</body>
+</html>
