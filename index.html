@@ -62,12 +62,12 @@
         @keyframes spinRecord { 100% { transform: rotate(360deg); } }
         .animate-spin-slow { animation: spinRecord 4s linear infinite; }
 
+        /* Marquee Styles */
         .marquee-wrapper {
             flex: 1;
             overflow: hidden;
             display: flex;
             align-items: center;
-            /* Плавное растворение текста по краям, как в TikTok */
             -webkit-mask-image: linear-gradient(to right, transparent, black 10px, black calc(100% - 10px), transparent);
             mask-image: linear-gradient(to right, transparent, black 10px, black calc(100% - 10px), transparent);
         }
@@ -75,13 +75,13 @@
         .marquee-text {
             white-space: nowrap;
             display: inline-block;
-            padding-left: 100%; /* Выталкиваем текст за правый край */
+            padding-left: 100%;
             animation: marquee-scroll 7s linear infinite;
         }
 
         @keyframes marquee-scroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-100%); } /* Двигаем на 100% своей длины влево */
+            100% { transform: translateX(-100%); }
         }
 
         @keyframes floatHeart {
@@ -192,7 +192,7 @@
             100% { height: 100%; }
         }
 
-        /* Discover Page Transitions */
+        /* Modals & Discover Transitions */
         #discover-page {
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             transform: translateY(100%);
@@ -200,25 +200,20 @@
         #discover-page.active {
             transform: translateY(0);
         }
-
-        /* TikTok Logo Effect in Text */
-        .tt-text-effect {
-            position: relative;
-            display: inline-block;
-            font-weight: 900;
-            color: white;
-            text-shadow: 2px 0px 0px #fe0979, -2px 0px 0px #06b6d4;
-        }
     </style>
 </head>
 <body>
 
     <!-- Top Navigation -->
     <div class="fixed top-0 left-0 w-full z-30 top-nav pt-12 pb-6 px-4 flex justify-between items-start pointer-events-none">
-        <div class="pointer-events-auto flex items-end tracking-tighter">
-            <span class="text-sm font-semibold text-gray-400 mb-0.5">dev</span>
-            <span class="text-2xl font-black font-display mx-0.5 tt-text-effect">TikTok</span>
-            <span class="text-sm font-semibold text-gray-400 mb-0.5">.tech</span>
+        <div class="pointer-events-auto flex items-baseline">
+            <span class="text-xl font-bold text-gray-300">dev</span>
+            <span class="text-2xl font-black tracking-tight mx-0.5 relative font-display">
+                <span class="absolute top-0 -left-[1.5px] text-[#25F4EE] mix-blend-screen">TikTok</span>
+                <span class="absolute top-0 -right-[1.5px] text-[#FE2C55] mix-blend-screen">TikTok</span>
+                <span class="relative text-white">TikTok</span>
+            </span>
+            <span class="text-xl font-bold text-gray-300">.tech</span>
         </div>
     </div>
 
@@ -229,12 +224,14 @@
         <!-- PROJECT 1: TIMER-ROLL -->
         <!-- ========================================== -->
         <div class="video-container bg-timer-roll relative" data-id="timer-roll">
-            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <!-- Background Visuals -->
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
                 <div class="blob w-96 h-96 bg-indigo-600 top-20 -left-20"></div>
                 <div class="blob w-80 h-80 bg-purple-600 bottom-20 -right-20" style="animation-delay: -4s"></div>
                 
+                <!-- Main App UI Overlay -->
                 <div class="flex flex-col items-center justify-center z-10 w-full max-w-sm gap-8 transform -translate-y-10">
-                    <div class="flex flex-col items-center pointer-events-auto">
+                    <div class="flex flex-col items-center">
                         <div id="timer-status" class="text-sm font-bold text-indigo-300 mb-2 h-5 tracking-widest uppercase transition-opacity duration-300"></div>
                         <div class="glass-panel px-8 py-4 rounded-3xl border-indigo-500/30 shadow-[0_0_40px_rgba(79,70,229,0.3)]">
                             <div id="timer-val" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-200 via-purple-300 to-indigo-200 font-display tabular-nums">00:00:00</div>
@@ -242,7 +239,8 @@
                         <div id="timer-added" class="text-emerald-400 font-bold text-lg mt-2 opacity-0 transform translate-y-2 transition-all duration-300">+00:00</div>
                     </div>
 
-                    <div id="roulette-box" class="w-full h-20 glass-panel rounded-xl overflow-hidden relative opacity-0 scale-95 transition-all duration-500 pointer-events-none">
+                    <!-- Roulette Container -->
+                    <div id="roulette-box" class="w-full h-20 glass-panel rounded-xl overflow-hidden relative opacity-0 scale-95 transition-all duration-500">
                         <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-red-500 z-20 transform -translate-x-1/2 shadow-[0_0_10px_red]"></div>
                         <div class="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#17153b] to-transparent z-10"></div>
                         <div class="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#17153b] to-transparent z-10"></div>
@@ -254,7 +252,9 @@
             <!-- Double Tap Area -->
             <div class="absolute inset-0 z-10 interact-area cursor-pointer"></div>
 
-            <div class="absolute right-3 bottom-32 z-20 flex flex-col items-center gap-4">
+            <!-- Right Sidebar Actions (Compact) -->
+            <div class="absolute right-3 bottom-[100px] z-20 flex flex-col items-center gap-4">
+                <!-- Avatar -->
                 <div class="relative group cursor-pointer" onclick="openProfileModal('tt-modal')">
                     <div class="w-10 h-10 rounded-full bg-slate-800 p-0.5 border border-white">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full rounded-full object-cover" alt="nneensi0">
@@ -263,32 +263,36 @@
                         <i class="fa-solid fa-plus"></i>
                     </div>
                 </div>
+                <!-- Like -->
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-heart text-2xl text-white drop-shadow-md transition-colors like-icon"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md like-count">12.4K</span>
                 </button>
+                <!-- Code/Comments -->
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-code text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Source</span>
                 </button>
+                <!-- Share -->
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-share text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Share</span>
                 </button>
             </div>
 
-            <div class="absolute left-3 bottom-16 right-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5">
+            <!-- Bottom Left Info (Compact) -->
+            <div class="absolute left-3 bottom-16 right-20 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5 drop-shadow-md">
                     @nneensi0 <i class="fa-solid fa-circle-check text-indigo-400 text-xs"></i>
                 </h2>
-                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-1.5">TIMER-ROLL</h3>
-                <p class="text-xs font-medium mb-2 text-gray-200 line-clamp-2">
+                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-purple-300 mb-1 drop-shadow-sm">TIMER-ROLL</h3>
+                <p class="text-xs font-medium mb-2 text-gray-100 line-clamp-2 drop-shadow-md leading-tight">
                     Интерактивный оверлей для стримов. Таймер с баффами, дебаффами и рулетка на React + Electron. 🎲⚡
                 </p>
                 <div class="flex gap-1.5 mb-3 flex-wrap">
@@ -296,16 +300,19 @@
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-purple-300 border-purple-500/30">#Tailwind</span>
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-blue-300 border-blue-500/30">#Supabase</span>
                 </div>
-                <div class="flex items-center gap-2 w-full">
-                    <i class="fa-solid fa-music text-xs animate-pulse shrink-0"></i>
+
+                <!-- Music / Audio Track (Marquee) -->
+                <div class="flex items-center gap-2 w-full mt-1">
+                    <i class="fa-solid fa-music text-[10px] animate-pulse shrink-0"></i>
                     <div class="marquee-wrapper">
-                        <span class="text-xs font-medium marquee-text">Оригинальный звук - timer_roll_synthwave</span>
+                        <span class="text-[11px] font-medium marquee-text drop-shadow-md">Оригинальный звук - timer_roll_synthwave</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Spinning Record (Compact) -->
             <div class="absolute right-3 bottom-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow shadow-lg">
                     <div class="w-5 h-5 rounded-full bg-indigo-500 overflow-hidden">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full object-cover opacity-80" alt="record">
                     </div>
@@ -317,11 +324,12 @@
         <!-- PROJECT 2: SHOKO -->
         <!-- ========================================== -->
         <div class="video-container bg-shoko relative" data-id="shoko">
-            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
                 <div class="blob w-[500px] h-[500px] bg-emerald-600/20 top-0 right-0"></div>
                 <div class="blob w-[400px] h-[400px] bg-pink-600/20 bottom-0 left-0" style="animation-delay: -2s"></div>
                 
-                <div class="w-full max-w-sm flex flex-col gap-6 z-10 transform -translate-y-12 pointer-events-auto">
+                <!-- Shoko App Visual -->
+                <div class="w-full max-w-sm flex flex-col gap-6 z-10 transform -translate-y-12">
                     <div id="shoko-gift-alert" class="gift-popup mx-auto glass-panel bg-black/60 rounded-full px-4 py-2 flex items-center gap-3 border-emerald-500/30 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
                         <div class="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-br from-pink-500 to-orange-400 p-[1px]">
                             <img id="shoko-user-avatar" src="https://placehold.co/100/333/fff?text=U" class="w-full h-full rounded-full object-cover">
@@ -350,7 +358,7 @@
 
             <div class="absolute inset-0 z-10 interact-area cursor-pointer"></div>
 
-            <div class="absolute right-3 bottom-32 z-20 flex flex-col items-center gap-4">
+            <div class="absolute right-3 bottom-[100px] z-20 flex flex-col items-center gap-4">
                 <div class="relative group cursor-pointer" onclick="openProfileModal('tt-modal')">
                     <div class="w-10 h-10 rounded-full bg-slate-800 p-0.5 border border-white">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full rounded-full object-cover" alt="nneensi0">
@@ -360,31 +368,31 @@
                     </div>
                 </div>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-heart text-2xl text-white drop-shadow-md transition-colors like-icon"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md like-count">8.1K</span>
                 </button>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-code text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Source</span>
                 </button>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-share text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Share</span>
                 </button>
             </div>
 
-            <div class="absolute left-3 bottom-16 right-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5">
+            <div class="absolute left-3 bottom-16 right-20 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5 drop-shadow-md">
                     @nneensi0 <i class="fa-solid fa-circle-check text-emerald-400 text-xs"></i>
                 </h2>
-                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-1.5">SHOKO PANEL</h3>
-                <p class="text-xs font-medium mb-2 text-gray-200 line-clamp-2">
+                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-300 mb-1 drop-shadow-sm">SHOKO PANEL</h3>
+                <p class="text-xs font-medium mb-2 text-gray-100 line-clamp-2 drop-shadow-md leading-tight">
                     Мощная панель управления для спавна мобов в Minecraft через подарки TikTok. Интеграция RCON & Socket.io ⚔️
                 </p>
                 <div class="flex gap-1.5 mb-3 flex-wrap">
@@ -392,16 +400,16 @@
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-300 border-emerald-500/30">#MinecraftAPI</span>
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-pink-300 border-pink-500/30">#TikTokLive</span>
                 </div>
-                <div class="flex items-center gap-2 w-full">
-                    <i class="fa-solid fa-music text-xs animate-pulse shrink-0"></i>
+                <div class="flex items-center gap-2 w-full mt-1">
+                    <i class="fa-solid fa-music text-[10px] animate-pulse shrink-0"></i>
                     <div class="marquee-wrapper">
-                        <span class="text-xs font-medium marquee-text">Оригинальный звук - shoko_minecraft_ost</span>
+                        <span class="text-[11px] font-medium marquee-text drop-shadow-md">Оригинальный звук - shoko_minecraft_ost</span>
                     </div>
                 </div>
             </div>
 
             <div class="absolute right-3 bottom-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow shadow-lg">
                     <div class="w-5 h-5 rounded-full bg-emerald-500 overflow-hidden">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full object-cover opacity-80" alt="record">
                     </div>
@@ -413,11 +421,11 @@
         <!-- PROJECT 3: KIRIESHKA TTS -->
         <!-- ========================================== -->
         <div class="video-container bg-kirieshka relative" data-id="kirieshka">
-            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
+            <div class="absolute inset-0 z-0 flex items-center justify-center overflow-hidden">
                 <div class="blob w-[600px] h-[600px] bg-[#fe0979]/20 top-0 rounded-full mix-blend-screen"></div>
                 <div class="blob w-[500px] h-[500px] bg-cyan-600/20 bottom-10 rounded-full mix-blend-screen" style="animation-delay: -3s;"></div>
                 
-                <div class="w-full max-w-sm flex flex-col items-center gap-6 z-10 transform -translate-y-16 px-4 pointer-events-auto">
+                <div class="w-full max-w-sm flex flex-col items-center gap-6 z-10 transform -translate-y-16 px-4">
                     <div class="w-full h-48 flex flex-col justify-end gap-2 overflow-hidden mb-4 relative mask-image-bottom" style="-webkit-mask-image: linear-gradient(to top, black 50%, transparent 100%);">
                         <div id="tts-chat-container" class="flex flex-col gap-3 w-full"></div>
                     </div>
@@ -450,7 +458,7 @@
 
             <div class="absolute inset-0 z-10 interact-area cursor-pointer"></div>
 
-            <div class="absolute right-3 bottom-32 z-20 flex flex-col items-center gap-4">
+            <div class="absolute right-3 bottom-[100px] z-20 flex flex-col items-center gap-4">
                 <div class="relative group cursor-pointer" onclick="openProfileModal('tt-modal')">
                     <div class="w-10 h-10 rounded-full bg-slate-800 p-0.5 border border-white">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full rounded-full object-cover" alt="nneensi0">
@@ -460,31 +468,31 @@
                     </div>
                 </div>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-heart text-2xl text-white drop-shadow-md transition-colors like-icon"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md like-count">24.5K</span>
                 </button>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-code text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Source</span>
                 </button>
                 <button class="action-btn flex flex-col items-center gap-0.5 group">
-                    <div class="w-9 h-9 rounded-full bg-black/20 flex items-center justify-center transition group-active:scale-90">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center transition group-active:scale-90">
                         <i class="fa-solid fa-share text-2xl text-white drop-shadow-md"></i>
                     </div>
                     <span class="text-[10px] font-semibold drop-shadow-md">Share</span>
                 </button>
             </div>
 
-            <div class="absolute left-3 bottom-16 right-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5">
+            <div class="absolute left-3 bottom-16 right-20 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
+                <h2 class="text-base font-bold mb-0.5 flex items-center gap-1.5 drop-shadow-md">
                     @nneensi0 <i class="fa-solid fa-paw text-[#fe0979] text-xs"></i>
                 </h2>
-                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-[#fe0979] to-cyan-400 mb-1.5">kirieshka tts</h3>
-                <p class="text-xs font-medium mb-2 text-gray-200 line-clamp-2">
+                <h3 class="text-lg font-black font-display text-transparent bg-clip-text bg-gradient-to-r from-[#fe0979] to-cyan-400 mb-1 drop-shadow-sm">kirieshka tts</h3>
+                <p class="text-xs font-medium mb-2 text-gray-100 line-clamp-2 drop-shadow-md leading-tight">
                     Локальная нейросеть (Silero TTS) для озвучки чата трансляций. Сделано с любовью ❤️🐾
                 </p>
                 <div class="flex gap-1.5 mb-3 flex-wrap">
@@ -492,16 +500,16 @@
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-cyan-300 border-cyan-500/30">#Silero</span>
                     <span class="glass-panel px-2 py-0.5 rounded-full text-[10px] font-bold text-white border-white/30">#Electron</span>
                 </div>
-                <div class="flex items-center gap-2 w-full">
-                    <i class="fa-solid fa-music text-xs animate-pulse shrink-0"></i>
+                <div class="flex items-center gap-2 w-full mt-1">
+                    <i class="fa-solid fa-music text-[10px] animate-pulse shrink-0"></i>
                     <div class="marquee-wrapper">
-                        <span class="text-xs font-medium marquee-text">Оригинальный звук - voice_ai_magic</span>
+                        <span class="text-[11px] font-medium marquee-text drop-shadow-md">Оригинальный звук - voice_ai_magic</span>
                     </div>
                 </div>
             </div>
 
             <div class="absolute right-3 bottom-16 z-20 pb-[var(--safe-area-bottom)] pointer-events-none">
-                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow">
+                <div class="w-10 h-10 rounded-full bg-gray-900 border-2 border-gray-600 flex items-center justify-center animate-spin-slow shadow-lg">
                     <div class="w-5 h-5 rounded-full bg-[#fe0979] overflow-hidden">
                         <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-full h-full object-cover opacity-80" alt="record">
                     </div>
@@ -567,15 +575,14 @@
     <!-- Всплывающие профили (Шторки) -->
     <div id="tg-modal" class="fixed inset-0 z-[60] flex flex-col justify-end pointer-events-none transition-opacity duration-300 opacity-0">
         <div class="absolute inset-0 bg-black/60 backdrop-modal cursor-pointer" onclick="closeModals()"></div>
-        <div class="bg-[#1c1c1d] w-full rounded-t-3xl pb-[var(--safe-area-bottom)] pt-4 px-6 transform translate-y-full transition-transform duration-300 sheet-content border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative z-10 pointer-events-auto">
+        <div class="bg-[#1c1c1d] w-full rounded-t-3xl pb-[var(--safe-area-bottom)] pt-4 px-6 transform translate-y-full transition-transform duration-300 sheet-content border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative z-10">
             <div class="w-12 h-1.5 bg-gray-600 rounded-full mx-auto mb-8"></div>
             <div class="flex flex-col items-center pb-8">
-                <div class="w-24 h-24 rounded-full bg-[#2AABEE] flex items-center justify-center mb-4 border-2 border-white shadow-[0_0_20px_rgba(42,171,238,0.3)]">
-                    <i class="fa-brands fa-telegram text-5xl text-white ml-[-2px]"></i>
+                <div class="w-24 h-24 rounded-full bg-[#2AABEE] flex items-center justify-center mb-4 border-2 border-white shadow-[0_0_20px_rgba(42,171,238,0.3)] text-white text-4xl">
+                    <i class="fa-brands fa-telegram"></i>
                 </div>
-                <h3 class="text-2xl font-bold text-white">Jacob</h3>
-                <p class="text-[#2AABEE] font-medium mb-2">@jacobdeads</p>
-                <p class="text-gray-400 text-center text-sm mb-6 max-w-[250px]">Разработка ПО, оверлеев и виджетов для TikTok Live Studio.</p>
+                <h3 class="text-2xl font-bold text-white mb-1">Jacob Deads</h3>
+                <p class="text-gray-400 font-medium mb-6">@jacobdeads</p>
                 <button onclick="window.open('https://t.me/jacobdeads', '_blank')" class="w-full py-4 bg-[#2AABEE] text-white rounded-2xl font-bold text-lg shadow-lg shadow-[#2AABEE]/30 active:scale-95 transition-transform">
                     Написать в Telegram
                 </button>
@@ -585,18 +592,26 @@
 
     <div id="tt-modal" class="fixed inset-0 z-[60] flex flex-col justify-end pointer-events-none transition-opacity duration-300 opacity-0">
         <div class="absolute inset-0 bg-black/60 backdrop-modal cursor-pointer" onclick="closeModals()"></div>
-        <div class="bg-[#111] w-full rounded-t-3xl pb-[var(--safe-area-bottom)] pt-4 px-6 transform translate-y-full transition-transform duration-300 sheet-content border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative z-10 pointer-events-auto">
+        <div class="bg-[#111] w-full rounded-t-3xl pb-[var(--safe-area-bottom)] pt-4 px-6 transform translate-y-full transition-transform duration-300 sheet-content border-t border-white/10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)] relative z-10 min-h-[350px]">
             <div class="w-12 h-1.5 bg-gray-600 rounded-full mx-auto mb-8"></div>
-            <div class="flex flex-col items-center pb-8">
-                <img src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-24 h-24 rounded-full object-cover mb-4 border-2 border-[#fe0979] shadow-[0_0_20px_rgba(254,9,121,0.3)]">
-                <h3 class="text-2xl font-bold text-white">Nneensi</h3>
+            
+            <!-- Лоадер -->
+            <div id="tt-loader" class="absolute inset-0 top-12 flex flex-col items-center justify-center z-20">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl text-[#fe0979] mb-4"></i>
+                <span class="text-gray-400 text-sm font-medium animate-pulse">Получение данных...</span>
+            </div>
+
+            <!-- Контент профиля -->
+            <div id="tt-content" class="flex flex-col items-center pb-8 opacity-0 transition-opacity duration-500 pointer-events-none">
+                <img id="tt-avatar" src="https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/40c21acaa2b8a71198bc668c68530791~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&amp;refresh_token=9da1e2c3&amp;x-expires=1780401600&amp;x-signature=Dat9aOzj0x5vXGrlI9RC%2BdOud7g%3D&amp;t=4d5b0474&amp;ps=13740610&amp;shp=a5d48078&amp;shcp=81f88b70&amp;idc=my2" class="w-24 h-24 rounded-full object-cover mb-4 border-2 border-[#fe0979] shadow-[0_0_20px_rgba(254,9,121,0.3)]">
+                <h3 id="tt-nickname" class="text-2xl font-bold text-white">Nneensi</h3>
                 <p class="text-gray-400 font-medium mb-4">@nneensi0</p>
-                <div class="flex gap-6 mb-6 text-center">
-                    <div><div class="font-bold text-lg">145</div><div class="text-xs text-gray-500">Подписок</div></div>
-                    <div><div class="font-bold text-lg">84.2K</div><div class="text-xs text-gray-500">Подписчиков</div></div>
-                    <div><div class="font-bold text-lg">1.2M</div><div class="text-xs text-gray-500">Лайков</div></div>
+                <div class="flex gap-6 mb-6 text-center w-full justify-center">
+                    <div><div id="tt-following" class="font-bold text-lg">-</div><div class="text-xs text-gray-500">Подписок</div></div>
+                    <div><div id="tt-followers" class="font-bold text-lg">-</div><div class="text-xs text-gray-500">Подписчиков</div></div>
+                    <div><div id="tt-likes" class="font-bold text-lg">-</div><div class="text-xs text-gray-500">Лайков</div></div>
                 </div>
-                <button onclick="window.open('https://www.tiktok.com/@nneensi0', '_blank')" class="w-full py-4 bg-[#fe0979] text-white rounded-2xl font-bold text-lg shadow-lg shadow-[#fe0979]/30 active:scale-95 transition-transform">
+                <button onclick="window.open('https://www.tiktok.com/@nneensi0', '_blank')" class="w-full py-4 bg-[#fe0979] text-white rounded-2xl font-bold text-lg shadow-lg shadow-[#fe0979]/30 active:scale-95 transition-transform pointer-events-auto">
                     Перейти в TikTok
                 </button>
             </div>
@@ -621,11 +636,11 @@
                     <i class="fa-solid fa-plus text-black font-black"></i>
                 </div>
             </button>
-            <button id="btn-inbox" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white">
+            <button id="btn-inbox" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white" onclick="openProfileModal('tg-modal')">
                 <i class="fa-solid fa-message text-xl mb-1"></i>
                 <span class="text-[9px] font-bold">Inbox</span>
             </button>
-            <button id="btn-profile" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white">
+            <button id="btn-profile" class="flex flex-col items-center justify-center w-12 text-gray-500 transition hover:text-white" onclick="openProfileModal('tt-modal')">
                 <i class="fa-regular fa-user text-xl mb-1"></i>
                 <span class="text-[9px] font-bold">Profile</span>
             </button>
@@ -633,7 +648,7 @@
     </div>
 
     <script>
-        // Modal functions in global scope for HTML onclick access
+        // Modal functions in global scope
         function openProfileModal(modalId) {
             const modal = document.getElementById(modalId);
             modal.classList.remove('pointer-events-none');
@@ -641,53 +656,71 @@
             setTimeout(() => {
                 modal.querySelector('.sheet-content').classList.remove('translate-y-full');
             }, 10);
+
+            if (modalId === 'tt-modal') {
+                loadTikTokData();
+            }
+        }
+
+        async function loadTikTokData() {
+            const loader = document.getElementById('tt-loader');
+            const content = document.getElementById('tt-content');
+            
+            loader.style.display = 'flex';
+            content.classList.remove('opacity-100', 'pointer-events-auto');
+            content.classList.add('opacity-0', 'pointer-events-none');
+
+            try {
+                // Имитация сетевого запроса к API
+                await new Promise(resolve => setTimeout(resolve, 1500));
+
+                const data = {
+                    following: '22',
+                    followers: '6282',
+                    likes: '2928'
+                };
+
+                document.getElementById('tt-following').innerText = data.following;
+                document.getElementById('tt-followers').innerText = data.followers;
+                document.getElementById('tt-likes').innerText = data.likes;
+
+                loader.style.display = 'none';
+                content.classList.remove('opacity-0', 'pointer-events-none');
+                content.classList.add('opacity-100', 'pointer-events-auto');
+
+            } catch (error) {
+                loader.innerHTML = '<span class="text-red-500 font-bold mb-4">Ошибка загрузки</span>';
+            }
         }
 
         function closeModals() {
             ['tg-modal', 'tt-modal'].forEach(id => {
                 const modal = document.getElementById(id);
-                modal.querySelector('.sheet-content').classList.add('translate-y-full');
-                setTimeout(() => {
-                    modal.classList.add('opacity-0');
-                    modal.classList.add('pointer-events-none');
-                }, 300);
+                if (!modal.classList.contains('pointer-events-none')) {
+                    modal.querySelector('.sheet-content').classList.add('translate-y-full');
+                    setTimeout(() => {
+                        modal.classList.add('pointer-events-none', 'opacity-0');
+                    }, 300);
+                }
             });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // ==========================================
-            // NAVIGATION & MODALS
-            // ==========================================
             const discoverPage = document.getElementById('discover-page');
             
             document.getElementById('btn-discover').addEventListener('click', () => {
                 discoverPage.classList.add('active');
             });
-            
             document.getElementById('btn-close-discover').addEventListener('click', () => {
                 discoverPage.classList.remove('active');
             });
-
-            document.getElementById('btn-inbox').addEventListener('click', () => {
-                openProfileModal('tg-modal');
-            });
-
-            document.getElementById('btn-profile').addEventListener('click', () => {
-                openProfileModal('tt-modal');
-            });
-
             document.getElementById('btn-home').addEventListener('click', () => {
                 discoverPage.classList.remove('active');
-                closeModals();
                 document.getElementById('feed').scrollTo({top: 0, behavior: 'smooth'});
             });
 
-            // ==========================================
-            // GLOBAL: UI Interactions (Likes, Double tap)
-            // ==========================================
             const videos = document.querySelectorAll('.video-container');
-            
             videos.forEach(video => {
                 const interactArea = video.querySelector('.interact-area');
                 const likeBtn = video.querySelector('.action-btn:nth-child(2)');
@@ -741,10 +774,6 @@
                 setTimeout(() => heart.remove(), 1000);
             }
 
-
-            // ==========================================
-            // PROJECT 1: TIMER-ROLL LOGIC
-            // ==========================================
             const timerValEl = document.getElementById('timer-val');
             const timerStatusEl = document.getElementById('timer-status');
             const timerAddedEl = document.getElementById('timer-added');
@@ -787,7 +816,6 @@
 
             async function triggerRouletteEvent() {
                 clearInterval(timerInterval);
-                
                 const addedSeconds = Math.floor(Math.random() * 10) * 60;
                 totalSeconds += addedSeconds;
                 
@@ -852,11 +880,6 @@
             startMainTimer();
             setInterval(triggerRouletteEvent, 12000);
 
-
-
-            // ==========================================
-            // PROJECT 2: SHOKO PANEL LOGIC
-            // ==========================================
             const shokoGiftAlert = document.getElementById('shoko-gift-alert');
             const shokoUsername = document.getElementById('shoko-username');
             const shokoAvatar = document.getElementById('shoko-user-avatar');
@@ -904,10 +927,6 @@
                 setInterval(triggerShokoEvent, 6000);
             }, 1000);
 
-
-            // ==========================================
-            // PROJECT 3: KIRIESHKA TTS LOGIC
-            // ==========================================
             const ttsChatContainer = document.getElementById('tts-chat-container');
             const ttsStatusText = document.getElementById('tts-status-text');
             const ttsStatusBadge = document.getElementById('tts-status-badge');
